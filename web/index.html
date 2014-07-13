@@ -1,0 +1,69 @@
+<html></<html>
+<head>
+	<title></title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	function cardsFor(username) {
+		var cdn_prefx = "http://cdn.steamcommunity.com/economy/image/";
+		$.getJSON('/cards?username='+username, function(json) {
+			$('#out').html('');
+			$('#other').html('');
+			$('a#rest').attr('href','');
+			$.each(json, function(i, card) {
+				var is_card = (card['type'].indexOf('Trading Card') > 0);
+				$(is_card ? '#out' : '#other').append(
+					'<img src="'+cdn_prefx+card['icon_url']+'" title="'+card['name']+'"/>'
+					);
+			});
+			$('a#rest').attr('href', 'http://steamcommunity.com/id/'+ username +'/inventory/');
+		}).fail(function(jqxhr, textStatus, error) {
+			alert(error);
+		});
+	}
+	$.urlParam = function(name){
+	    var results = new RegExp('[\?&]'+ name +'=([^&#]*)').exec(window.location.href);
+	    return results[1] || 0;
+	}
+
+	$(function() {
+		/*
+		$('#cardForm').submit(function(e) {
+			e.preventDefault();
+			cardsFor($('#username').val());
+		});
+		*/
+		if($.urlParam('username')) {
+			$('#username').val($.urlParam('username'));
+			//$('#cardForm').submit();
+			cardsFor($('#username').val());
+		}
+	});
+	</script>
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
+<body>
+
+<center>
+<div id="header"></div>
+
+<div id="container"><div id="content">
+
+	<h2>Duplicate Steam items</h2>
+	<form id="cardForm" method="get">
+		for username: <input id="username"/>
+		<input type="submit"/>
+	</form>
+
+	<a id="rest" href="">see rest of it</a>
+
+	<h2>trading cards</h2>
+	<div id="out">n/a</div>
+
+	<h2>other stuff</h2>
+	<div id="other">n/a</div>
+
+</div></div>
+</center>
+
+</body>
+</html>
