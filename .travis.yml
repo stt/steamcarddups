@@ -1,5 +1,22 @@
 language: node_js
+
 node_js:
-  - "0.10"
-  - "0.8"
-  - "0.6"
+- '0.10'
+
+# by default only deploys from master
+deploy:
+  provider: heroku
+
+  api_key:
+    secure: AFPlo8oQWY1sxhKBsHAV/JrlijNyojvt3G3ufZqaW7XtL85N4P6ueqgv+ytzSABKilVgYrLlNWqVbtRwzST11H7dQaKjfeIub1Lf897czf0pXuO5cYOrGKNJOqyZudaJFxmjql3/BTofLh0NuBIuGv9jQ1WydwtdoJhqRqgum0Q=
+
+# Limit deployment to branches..
+#  on:
+#    branch: master
+# Map branch to heroku app..
+#  app:
+#    development: steamcarddups-dev
+
+# Limit builds to branches..
+#branches:
+#  only:
