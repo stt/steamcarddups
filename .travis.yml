@@ -6,6 +6,7 @@ node_js:
 # by default only deploys from master
 deploy:
   provider: heroku
+  buildpack: https://github.com/aergonaut/heroku-buildpack-coffeescript.git
 
   api_key:
     secure: AFPlo8oQWY1sxhKBsHAV/JrlijNyojvt3G3ufZqaW7XtL85N4P6ueqgv+ytzSABKilVgYrLlNWqVbtRwzST11H7dQaKjfeIub1Lf897czf0pXuO5cYOrGKNJOqyZudaJFxmjql3/BTofLh0NuBIuGv9jQ1WydwtdoJhqRqgum0Q=
