@@ -3,11 +3,19 @@ findDuplicateCards = (steamInv, cb) ->
   dups = {}
   dupcards = []
   for key,el of steamInv.rgInventory
-    if dups[el.classid]
+    dups[el.classid] = if !dups[el.classid] then 1 else dups[el.classid] + 1
+    if dups[el.classid] == 2
       dupcards.push steamInv.rgDescriptions[el.classid+'_'+el.instanceid]
-    if !dups[el.classid]
-      dups[el.classid] = true
   cb dupcards if cb
+
+Array::unique = ->
+  output = {}
+  output[@[key]] = @[key] for key in [0...@length]
+  value for key, value of output
+
+findGamesWithCards = (steamInv, cb) ->
+  games = (el.classid for key,el of steamInv.rgDescriptions).unique()
+  cb games if cb
 
 http_get = (url, cb) ->
   http = require('http')
@@ -34,5 +42,6 @@ exports.cards = (req, res) ->
     if json.success == "false"
       res.send 500, json.Error
     else
-      findDuplicateCards json, (dups) ->
-        res.json(dups).end()
+      findGamesWithCards json, (games) ->
+        findDuplicateCards json, (dups) ->
+          res.json({'gamesWithCards': games, 'cards': dups}).end()

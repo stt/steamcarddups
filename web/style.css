@@ -15,7 +15,7 @@ body {
 	/*width: 628px;*/
 	text-align: left;
 	padding: 40px 60px;
-	line-height: 20px;
+	line-height: 30px;
 }
 #header {
 	width:100%;
@@ -29,4 +29,43 @@ a[href=""] {
 
 a:link, a:visited, a:hover, a:active {
 	color: lightblue;
+}
+
+.half {
+	width: 50%;
+}
+#first {
+	float: left;
+}
+#second {
+	float: right;
+	display: none;
+}
+.clearer {
+	clear: both;
+}
+
+.other {
+	max-width: 100%;
+}
+
+label {
+	display: block;
+}
+
+img.icon {
+	margin: 5px;
+}
+
+input[type="checkbox"] {
+	width: 28px;
+	height: 28px;
+}
+
+form {
+	position: relative;
+}
+#seeSecond {
+	position: absolute;
+	right: 0;
 }

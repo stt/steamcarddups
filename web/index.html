@@ -1,45 +1,72 @@
-<html></<html>
+<html>
 <head>
-	<title></title>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script type="text/javascript">
-	function cardsFor(username) {
-		var cdn_prefx = "http://cdn.steamcommunity.com/economy/image/";
-		$.getJSON('/cards?username='+username, function(json) {
-			$('#out').html('');
-			$('#other').html('');
-			$('a#rest').attr('href','');
-			$.each(json, function(i, card) {
-				var is_card = (card['type'].indexOf('Trading Card') > 0);
-				$(is_card ? '#out' : '#other').append(
-					'<img src="'+cdn_prefx+card['icon_url']+'" title="'+card['name']+'"/>'
-					);
-			});
-			$('a#rest').attr('href', 'http://steamcommunity.com/id/'+ username +'/inventory/');
-		}).fail(function(jqxhr, textStatus, error) {
-			alert(error);
-		});
-	}
-	$.urlParam = function(name){
-	    var results = new RegExp('[\?&]'+ name +'=([^&#]*)').exec(window.location.href);
-	    return results[1] || 0;
-	}
+    <title></title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    function cardsFor(username, selPrefix, onlyAppId, cb) {
+        var cdn_prefx = "http://cdn.steamcommunity.com/economy/image/";
+        $.getJSON('/cards?username='+username, function(json) {
+            var sharedGames = 0;
+            var cards = [], others = [];
+            $.each(json['cards'], function(i, card) {
+                if(!onlyAppId || onlyAppId.indexOf(card['classid']) >= 0) {
+                    sharedGames++;
+                    var is_card = (card['type'].indexOf('Trading Card') > 0);
+                    var html = '<img class="icon" src="'+cdn_prefx+card['icon_url']+'" title="'+card['classid']+'"/>';
+                    //html += '<input type="checkbox" class="choose"/>';
+                    if(is_card)
+                        cards.push(html);
+                    else
+                        others.push(html);
+                }
+            });
 
-	$(function() {
-		/*
-		$('#cardForm').submit(function(e) {
-			e.preventDefault();
-			cardsFor($('#username').val());
-		});
-		*/
-		if($.urlParam('username')) {
-			$('#username').val($.urlParam('username'));
-			//$('#cardForm').submit();
-			cardsFor($('#username').val());
-		}
-	});
-	</script>
-	<link rel="stylesheet" type="text/css" href="style.css"/>
+            if(onlyAppId) {
+                var text = "of "+json['gamesWithCards'].length+" games ("+sharedGames+" shared)"
+                text += (!cards.length ? ", none matched" : ", following duplicates were found");
+                $(selPrefix + ' .out').html(text);
+            } else {
+                $(selPrefix + ' .out').html(
+                    "of "+json['gamesWithCards'].length+" games, following duplicates were found");
+            }
+            if(cards.length) $(selPrefix + ' .out').append('<center>'+cards.join('')+'</center>');
+
+            if(others.length) $(selPrefix + ' .other').html('<center>'+others.join('')+'</center>');
+
+            $(selPrefix + ' a.rest').attr('href', 'http://steamcommunity.com/id/'+ username +'/inventory/');
+            if(typeof cb == "function") cb(json);
+
+        }).fail(function(jqxhr, textStatus, error) {
+            alert(error);
+        });
+    }
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]'+ name +'=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
+
+    $(function() {
+        $('#compare').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#seeSecond').toggle();
+            $('#second').toggle();
+            $('#first').addClass('half');
+        });
+        if($.urlParam('username')) {
+            $('#username').val($.urlParam('username'));
+            //$('#cardForm').submit();
+            cardsFor($('#username').val(), '#first', null, function(inv){
+                if($.urlParam('username2')) {
+                    $('#compare').click();
+                    $('#username2').val($.urlParam('username2'));
+                    cardsFor($('#username2').val(), '#second', inv['gamesWithCards']);
+                }
+            });
+        }
+    });
+    </script>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
 
@@ -48,19 +75,46 @@
 
 <div id="container"><div id="content">
 
-	<h2>Duplicate Steam items</h2>
-	<form id="cardForm" method="get">
-		for username: <input id="username" name="username"/>
-		<input type="submit"/>
-	</form>
+    <h2>Duplicate Steam items</h2>
+    <form id="cardForm" method="get">
+        <div id="first">
+            <label>for username:</label>
+            <input id="username" name="username"/>
+            <input type="submit"/>
 
-	<a id="rest" href="">see rest of it</a>
+            <div>
+            <a class="rest" href="">see rest of it</a>
+            </div>
 
-	<h2>trading cards</h2>
-	<div id="out">n/a</div>
+            <h2>trading cards</h2>
+            <div class="out">n/a</div>
 
-	<h2>other stuff</h2>
-	<div id="other">n/a</div>
+            <h2>other stuff</h2>
+            <div class="other">n/a</div>
+        </div>
+        <div id="seeSecond">
+            <button id="compare">Compare to another user</button>
+        </div>
+        <div id="second" class="half">
+            <label>
+                duplicates of intersecting games owned by user:
+            </label>
+            <input id="username2" name="username2"/>
+            <input type="submit"/>
+
+            <div>
+            <a class="rest" href="">see rest of it</a>
+            </div>
+
+            <h2>trading cards</h2>
+            <div class="out">n/a</div>
+
+            <h2>other stuff</h2>
+            <div class="other">n/a</div>
+        </div>
+    </form>
+
+    <div class="clearer"></div>
 
 </div></div>
 </center>
