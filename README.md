@@ -5,4 +5,8 @@ Retrieves inventory for given Steam user, looks for duplicate items and optional
 
 Naturally requires Steam users' inventories to be public.
 
-[![Build Status](https://travis-ci.org/stt/steamcarddups.svg?branch=development)](https://travis-ci.org/stt/steamcarddups)
+Hosted [here](http://steamcarddups.herokuapp.com/)
+
+For information on setup, check out [wiki](https://github.com/stt/steamcarddups/wiki/Development-setup)
+
+[![Build Status](https://travis-ci.org/stt/steamcarddups.svg?branch=master)](https://travis-ci.org/stt/steamcarddups)
