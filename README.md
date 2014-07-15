@@ -9,4 +9,4 @@ Hosted [here](http://steamcarddups.herokuapp.com/)
 
 For information on setup, check out [wiki](https://github.com/stt/steamcarddups/wiki/Development-setup)
 
-[![Build Status](https://travis-ci.org/stt/steamcarddups.svg?branch=development)](https://travis-ci.org/stt/steamcarddups)
+[![Build Status](https://travis-ci.org/stt/steamcarddups.svg?branch=master "Build status of master branch")](https://travis-ci.org/stt/steamcarddups)
